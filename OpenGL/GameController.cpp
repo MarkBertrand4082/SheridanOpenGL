@@ -15,6 +15,7 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Failed to initialize GLEW.");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glEnable(GL_CULL_FACE);
 
 	m_camera = Camera(WindowController::GetInstance().GetResolution());
 }

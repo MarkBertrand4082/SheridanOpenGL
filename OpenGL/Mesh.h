@@ -17,7 +17,9 @@ public:
 private:
 	Shader* m_shader;
 	GLuint m_vertexBuffer;
+	GLuint m_indexBuffer;
 	vector<GLfloat> m_vertexData;
+	vector<GLubyte> m_indexData;
 	glm::mat4 m_world;
 };
 
