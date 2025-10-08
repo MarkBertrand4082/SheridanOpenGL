@@ -15,8 +15,11 @@ namespace OpenGL {
 	public ref class ToolWindow : public System::Windows::Forms::Form
 	{
 	public:
-		static bool RenderRedChannel;
-		static bool RenderGreenChannel;
+		static int ColourY;
+		static int ColourU;
+		static int ColourV;
+
+
 	private: System::Windows::Forms::TrackBar^ trackBar1;
 	private: System::Windows::Forms::TrackBar^ trackBar2;
 	private: System::Windows::Forms::TrackBar^ trackBar3;
@@ -25,7 +28,6 @@ namespace OpenGL {
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Label^ label3;
 	public:
-		static bool RenderBlueChannel;
 
 		ToolWindow(void)
 		{
