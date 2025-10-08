@@ -92,6 +92,7 @@ namespace OpenGL {
 			this->trackBar2->Size = System::Drawing::Size(638, 69);
 			this->trackBar2->TabIndex = 1;
 			this->trackBar2->Value = 100;
+			this->trackBar2->Scroll += gcnew System::EventHandler(this, &ToolWindow::trackBar2_Scroll);
 			// 
 			// trackBar3
 			// 
@@ -101,6 +102,7 @@ namespace OpenGL {
 			this->trackBar3->Size = System::Drawing::Size(638, 69);
 			this->trackBar3->TabIndex = 2;
 			this->trackBar3->Value = 100;
+			this->trackBar3->Scroll += gcnew System::EventHandler(this, &ToolWindow::trackBar3_Scroll);
 			// 
 			// checkBox1
 			// 
@@ -121,7 +123,6 @@ namespace OpenGL {
 			this->label1->Size = System::Drawing::Size(20, 20);
 			this->label1->TabIndex = 4;
 			this->label1->Text = L"Y";
-			this->label1->Click += gcnew System::EventHandler(this, &ToolWindow::label1_Click);
 			// 
 			// label2
 			// 
@@ -172,11 +173,15 @@ namespace OpenGL {
 	private: System::Void checkBox1_CheckedChanged_1(System::Object^ sender, System::EventArgs^ e) {
 
 	}
-	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
-	}
+
 	private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		
 
+	}
+	private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs^ e) {
+	}
+
+	private: System::Void trackBar3_Scroll(System::Object^ sender, System::EventArgs^ e) {
 	}
 };
 }
