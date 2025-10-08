@@ -17,14 +17,20 @@ namespace OpenGL {
 	public:
 		static bool RenderRedChannel;
 		static bool RenderGreenChannel;
+	private: System::Windows::Forms::TrackBar^ trackBar1;
+	private: System::Windows::Forms::TrackBar^ trackBar2;
+	private: System::Windows::Forms::TrackBar^ trackBar3;
+	private: System::Windows::Forms::CheckBox^ checkBox1;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ label3;
+	public:
 		static bool RenderBlueChannel;
 
 		ToolWindow(void)
 		{
 			InitializeComponent();
-			RenderRedChannel = checkBox1->Checked;
-			RenderGreenChannel = checkBox2->Checked;
-			RenderBlueChannel = checkBox3->Checked;
+
 		}
 
 	protected:
@@ -38,10 +44,10 @@ namespace OpenGL {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::CheckBox^ checkBox1;
+
 	protected:
-	private: System::Windows::Forms::CheckBox^ checkBox2;
-	private: System::Windows::Forms::CheckBox^ checkBox3;
+
+
 
 	private:
 		/// <summary>
@@ -56,59 +62,105 @@ namespace OpenGL {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->trackBar1 = (gcnew System::Windows::Forms::TrackBar());
+			this->trackBar2 = (gcnew System::Windows::Forms::TrackBar());
+			this->trackBar3 = (gcnew System::Windows::Forms::TrackBar());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox2 = (gcnew System::Windows::Forms::CheckBox());
-			this->checkBox3 = (gcnew System::Windows::Forms::CheckBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar3))->BeginInit();
 			this->SuspendLayout();
+			// 
+			// trackBar1
+			// 
+			this->trackBar1->Location = System::Drawing::Point(37, 35);
+			this->trackBar1->Maximum = 200;
+			this->trackBar1->Name = L"trackBar1";
+			this->trackBar1->Size = System::Drawing::Size(638, 69);
+			this->trackBar1->TabIndex = 0;
+			this->trackBar1->Value = 100;
+			this->trackBar1->Scroll += gcnew System::EventHandler(this, &ToolWindow::trackBar1_Scroll);
+			// 
+			// trackBar2
+			// 
+			this->trackBar2->Location = System::Drawing::Point(37, 129);
+			this->trackBar2->Maximum = 200;
+			this->trackBar2->Name = L"trackBar2";
+			this->trackBar2->Size = System::Drawing::Size(638, 69);
+			this->trackBar2->TabIndex = 1;
+			this->trackBar2->Value = 100;
+			// 
+			// trackBar3
+			// 
+			this->trackBar3->Location = System::Drawing::Point(37, 235);
+			this->trackBar3->Maximum = 200;
+			this->trackBar3->Name = L"trackBar3";
+			this->trackBar3->Size = System::Drawing::Size(638, 69);
+			this->trackBar3->TabIndex = 2;
+			this->trackBar3->Value = 100;
 			// 
 			// checkBox1
 			// 
 			this->checkBox1->AutoSize = true;
-			this->checkBox1->Checked = true;
-			this->checkBox1->CheckState = System::Windows::Forms::CheckState::Checked;
-			this->checkBox1->Location = System::Drawing::Point(12, 12);
+			this->checkBox1->Location = System::Drawing::Point(16, 331);
 			this->checkBox1->Name = L"checkBox1";
-			this->checkBox1->Size = System::Drawing::Size(128, 24);
-			this->checkBox1->TabIndex = 0;
-			this->checkBox1->Text = L"Red Channel";
+			this->checkBox1->Size = System::Drawing::Size(133, 24);
+			this->checkBox1->TabIndex = 3;
+			this->checkBox1->Text = L"Invert Colours";
 			this->checkBox1->UseVisualStyleBackColor = true;
-			this->checkBox1->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBox1_CheckedChanged);
+			this->checkBox1->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBox1_CheckedChanged_1);
 			// 
-			// checkBox2
+			// label1
 			// 
-			this->checkBox2->AutoSize = true;
-			this->checkBox2->Location = System::Drawing::Point(12, 45);
-			this->checkBox2->Name = L"checkBox2";
-			this->checkBox2->Size = System::Drawing::Size(143, 24);
-			this->checkBox2->TabIndex = 1;
-			this->checkBox2->Text = L"Green Channel";
-			this->checkBox2->UseVisualStyleBackColor = true;
-			this->checkBox2->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBox2_CheckedChanged);
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(12, 44);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(20, 20);
+			this->label1->TabIndex = 4;
+			this->label1->Text = L"Y";
+			this->label1->Click += gcnew System::EventHandler(this, &ToolWindow::label1_Click);
 			// 
-			// checkBox3
+			// label2
 			// 
-			this->checkBox3->AutoSize = true;
-			this->checkBox3->Location = System::Drawing::Point(10, 75);
-			this->checkBox3->Name = L"checkBox3";
-			this->checkBox3->Size = System::Drawing::Size(130, 24);
-			this->checkBox3->TabIndex = 2;
-			this->checkBox3->Text = L"Blue Channel";
-			this->checkBox3->UseVisualStyleBackColor = true;
-			this->checkBox3->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::checkBox3_CheckedChanged);
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(12, 145);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(21, 20);
+			this->label2->TabIndex = 5;
+			this->label2->Text = L"U";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(12, 246);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(20, 20);
+			this->label3->TabIndex = 6;
+			this->label3->Text = L"V";
 			// 
 			// ToolWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(249, 269);
-			this->Controls->Add(this->checkBox3);
-			this->Controls->Add(this->checkBox2);
+			this->ClientSize = System::Drawing::Size(706, 420);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->checkBox1);
+			this->Controls->Add(this->trackBar3);
+			this->Controls->Add(this->trackBar2);
+			this->Controls->Add(this->trackBar1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
 			this->Name = L"ToolWindow";
 			this->Text = L"ToolWindow";
 			this->TopMost = true;
 			this->Load += gcnew System::EventHandler(this, &ToolWindow::ToolWindow_Load);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->trackBar3))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -116,14 +168,15 @@ namespace OpenGL {
 #pragma endregion
 	private: System::Void ToolWindow_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
-	private: System::Void checkBox1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		RenderRedChannel = checkBox1->Checked;
+	
+	private: System::Void checkBox1_CheckedChanged_1(System::Object^ sender, System::EventArgs^ e) {
+
 	}
-	private: System::Void checkBox2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		RenderGreenChannel = checkBox2->Checked;
+	private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
-	private: System::Void checkBox3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		RenderBlueChannel = checkBox3->Checked;
+	private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
+		
+
 	}
 };
 }
