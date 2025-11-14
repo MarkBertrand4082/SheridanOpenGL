@@ -1,5 +1,8 @@
 #include "Mesh.h"
 #include "Shader.h"
+#include <OBJ_Loader.h>
+
+vector<Mesh> Mesh::Lights;
 
 Mesh::Mesh()
 {
@@ -10,7 +13,8 @@ Mesh::Mesh()
 	m_indexBuffer = 0;
 	m_position = { 0,0,0 };
 	m_rotation = { 0,0,0 };
-	
+	m_scale = { 1,1,1 };
+	m_world = glm::mat4();
 }
 
 Mesh::~Mesh()
@@ -25,70 +29,55 @@ void Mesh::Cleanup()
 	m_texture2.Cleanup();
 }
 
-void Mesh::Create(Shader* _shader)
+string Mesh::Concat(string _s1, int _index, string _s2)
+{
+	string index = to_string(_index);
+	return (_s1 + index + _s2);
+}
+
+void Mesh::Create(Shader* _shader, string _file)
 {
 	m_shader = _shader;
 
-	m_texture = Texture();
-	m_texture.LoadTexture("../Assets/Textures/Wood.jpg");
-	m_texture2 = Texture();
-	m_texture2.LoadTexture("../Assets/Textures/Emoji.jpg");
+	objl::Loader Loader;
+	M_ASSERT(Loader.LoadFile(_file) == true, "Failed to load mesh.");
 
-	m_vertexData = {
-		/*    Position    */  /* RGBA Colour */  /*Texture Coords*/
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
-	};
+	for(unsigned int i = 0; i < Loader.LoadedMeshes.size(); i++)
+	{
+		objl::Mesh curMesh = Loader.LoadedMeshes[i];
+		for(unsigned int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+			m_vertexData.push_back(curMesh.Vertices[j].Position.X);
+			m_vertexData.push_back(curMesh.Vertices[j].Position.Y);
+			m_vertexData.push_back(curMesh.Vertices[j].Position.Z);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.X);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.Y);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.Z);
+			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.X);
+			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+	}
+
+	string diffuseMap = Loader.LoadedMaterials[0].map_Kd;
+	const size_t last_slash_idx = diffuseMap.find_last_of("\\");
+	if(std::string::npos != last_slash_idx)
+	{
+		diffuseMap.erase(0, last_slash_idx + 1);
+	}
+
+	m_texture = Texture();
+	m_texture.LoadTexture("../Assets/Textures/"+diffuseMap);
+	m_texture2 = Texture();
+	m_texture2.LoadTexture("../Assets/Textures/"+diffuseMap);
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_vertexData.size() * sizeof(float), m_vertexData.data(), GL_STATIC_DRAW);
 }
 
-
-
-void Mesh::Render(glm::mat4 _wvp)
+void Mesh::BindAttributes() 
 {
-	glUseProgram(m_shader->GetProgramID());
-	m_shader->SetVec3("AmbientLight", { 0.1f, 0.1f, 0.1f });
-	m_shader->SetVec3("DiffuseColor", { 1.0f, 1.0f, 1.0f });
-	m_shader->SetVec3("LightDirection", { 1.0f, 0.5f, 0.0f });
-	m_shader->SetVec3("LightColor", { 0.5f, 0.9f, 0.5f });
-
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	//First attribute buffer :vertices
 	glEnableVertexAttribArray(m_shader->GetAttrVertices());
 	glVertexAttribPointer(m_shader->GetAttrVertices(),
@@ -116,20 +105,51 @@ void Mesh::Render(glm::mat4 _wvp)
 		8 * sizeof(float),
 		(void*)(6 * sizeof(float)));
 
-	m_rotation.y += 0.005f;
-	glm::mat4 translate = glm::translate(_wvp, m_position);
-	glm::mat4 transform = glm::rotate(translate, m_rotation.y, glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(m_shader->GetAttrWVP(), 1, GL_FALSE, &transform[0][0]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	
+}
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_texture.GetTexture());
-	glUniform1i(m_shader->GetSampler1(), 0);
+void Mesh::CalculateTransform()
+{
+	m_world = glm::translate(glm::mat4(1.0f), m_position);
+	m_world = glm::rotate(m_world, m_rotation.y, glm::vec3(0, 1, 0));
+	m_world = glm::scale(m_world,m_scale);
+}
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_texture2.GetTexture());
-	glUniform1i(m_shader->GetSampler2(), 1);
+void Mesh::SetShaderVariables(glm::mat4 _pv) 
+{
+	m_shader->SetMat4("World", m_world);
+	m_shader->SetMat4("WVP", _pv * m_world);
+	m_shader->SetVec3("CameraPosition", m_cameraPosition);
+
+	for(unsigned int i = 0; i<Lights.size(); i++)
+	{
+		m_shader->SetFloat(Concat("light[", i, "].constant").c_str(), 1.0f);
+		m_shader->SetFloat(Concat("light[", i, "].linear").c_str(), 0.09f);
+		m_shader->SetFloat(Concat("light[", i, "].quadratic").c_str(), 0.032f);
+
+		m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
+		m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
+		m_shader->SetVec3(Concat("light[", i, "].specualarColor").c_str(), {3.0f, 3.0f, 3.0f});
+
+		m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
+		m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({0.0f + i * 0.1f, 0, 0.0f + i * 0.1f}) - Lights[i].GetPosition()));
+		m_shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
+		m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
+
+	}
+	m_shader->SetFloat("material.specularStrength", 8);
+	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
+	m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
+}
+
+void Mesh::Render(glm::mat4 _pv)
+{
+	glUseProgram(m_shader->GetProgramID());
+
+	CalculateTransform();
+	SetShaderVariables(_pv);
+	BindAttributes();
 
 	glDrawArrays(GL_TRIANGLES,0, m_vertexData.size() / 8);
 	glDisableVertexAttribArray(m_shader->GetAttrNormals());

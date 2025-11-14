@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include <iostream>
 #include <fstream>
 
 #ifdef _WIN32
@@ -16,6 +18,9 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "Resolution.h"
 #include "Singleton.h"
