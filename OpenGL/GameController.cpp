@@ -33,6 +33,7 @@ void GameController::RunGame()
 	window->Show();
 
 
+
 	m_shaderColor = Shader();
 	m_shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
 	m_shaderDiffuse = Shader();
@@ -71,12 +72,80 @@ void GameController::RunGame()
 		for(unsigned int count = 0; count < Mesh::Lights.size(); count++)
 		{
 			Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
+			if (OpenGL::ToolWindow::resetLight) {
+				Mesh::Lights[count].SetPosition(glm::vec3(0.0,0.0,-1.0));
+				OpenGL::ToolWindow::resetLight = false;
+			}
+
+
+
 		}
+
+		
+
 		double msX, msY;
 
-		glfwGetCursorPos(WindowController::GetInstance().GetWindow(),&msX, &msY);
+		glfwGetCursorPos(WindowController::GetInstance().GetWindow(), &msX, &msY);
+		//center points of quadrants
+		float qHeight = ((float)WindowController::GetInstance().GetResolution().m_height / 4.0) / (float)WindowController::GetInstance().GetResolution().m_width;
+		float qWidth = ((float)WindowController::GetInstance().GetResolution().m_width / 4.0) / (float)WindowController::GetInstance().GetResolution().m_width;
 
-		f.RenderText("Mouse Position ("+to_string(msX) + ", " + to_string(msY) + ")", 10, 100, 0.5f, {1.0f, 1.0f, 0.0f});
+		if (glfwGetMouseButton(WindowController::GetInstance().GetWindow(),0) == GLFW_PRESS) {
+			if (OpenGL::ToolWindow::MoveLight) {
+				for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
+				{
+					glm::vec2 pos = Mesh::Lights[count].GetPosition();
+					//Top-Left
+					if (msX < WindowController::GetInstance().GetResolution().m_width / 2 && msY < WindowController::GetInstance().GetResolution().m_height / 2)
+					{
+						if (Mesh::Lights[count].GetPosition().x < qWidth || Mesh::Lights[count].GetPosition().y < qHeight)
+						{
+							glm::vec3 translation = glm::vec3(pos.x += qWidth/100.0, pos.y += qHeight/100.0, -1.0);
+							Mesh::Lights[count].SetPosition(translation);
+						}
+
+
+					}
+					//Top-Right
+					else if (msX > WindowController::GetInstance().GetResolution().m_width / 2 && msY < WindowController::GetInstance().GetResolution().m_height / 2)
+					{
+						if (Mesh::Lights[count].GetPosition().x > qWidth || Mesh::Lights[count].GetPosition().y < qHeight)
+						{
+							glm::vec3 translation = glm::vec3(pos.x -= qWidth / 100.0, pos.y += qHeight / 100.0, -1.0);
+							Mesh::Lights[count].SetPosition(translation);
+						}
+
+
+					}
+					//Bottom-Left
+					else if (msX < WindowController::GetInstance().GetResolution().m_width / 2 && msY > WindowController::GetInstance().GetResolution().m_height / 2)
+					{
+						if (Mesh::Lights[count].GetPosition().x < qWidth || Mesh::Lights[count].GetPosition().y > qHeight)
+						{
+							glm::vec3 translation = glm::vec3(pos.x += qWidth / 100.0, pos.y -= qHeight / 100.0, -1.0);
+							Mesh::Lights[count].SetPosition(translation);
+						}
+
+
+					}
+					//Bottom-Right
+					else if (msX > WindowController::GetInstance().GetResolution().m_width / 2 && msY > WindowController::GetInstance().GetResolution().m_height / 2)
+					{
+						if (Mesh::Lights[count].GetPosition().x > qWidth || Mesh::Lights[count].GetPosition().y > qHeight)
+						{
+							glm::vec3 translation = glm::vec3(pos.x -= qWidth / 100.0, pos.y -= qHeight / 100.0, -1.0);
+							Mesh::Lights[count].SetPosition(translation);
+						}
+
+
+					}
+				
+				}
+			}
+		}
+		
+		//f.RenderText("Mouse Position ("+to_string(msX) + ", " + to_string(msY) + ")", 10, 100, 0.5f, {1.0f, 1.0f, 0.0f});
+		f.RenderText("Mouse Position ("+to_string(Mesh::Lights[0].GetPosition().x) + ", " + to_string(Mesh::Lights[0].GetPosition().y) + ")", 10, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 		glfwSwapBuffers(WindowController::GetInstance().GetWindow());
 		glfwPollEvents();
 	} 

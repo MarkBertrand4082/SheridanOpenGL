@@ -17,6 +17,14 @@ namespace OpenGL {
 	public:
 		static bool RenderRedChannel;
 		static bool RenderGreenChannel;
+		static bool MoveLight;
+		static bool MoveCubes;
+		static bool ByPosition;
+		static bool resetLight;
+		static float Red;
+		static float Green;
+		static float Blue;
+		static float Specular;
 	private: System::Windows::Forms::TrackBar^ trackBar1;
 	private: System::Windows::Forms::TrackBar^ trackBar2;
 	private: System::Windows::Forms::TrackBar^ trackBar3;
@@ -141,6 +149,7 @@ namespace OpenGL {
 			this->radioButton1->TabStop = true;
 			this->radioButton1->Text = L"Move Light";
 			this->radioButton1->UseVisualStyleBackColor = true;
+			this->radioButton1->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::radioButton1_CheckedChanged);
 			// 
 			// radioButton2
 			// 
@@ -152,6 +161,7 @@ namespace OpenGL {
 			this->radioButton2->TabStop = true;
 			this->radioButton2->Text = L"Colour By Position";
 			this->radioButton2->UseVisualStyleBackColor = true;
+			this->radioButton2->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::radioButton2_CheckedChanged);
 			// 
 			// radioButton3
 			// 
@@ -163,6 +173,7 @@ namespace OpenGL {
 			this->radioButton3->TabStop = true;
 			this->radioButton3->Text = L"Move Cubes To Sphere";
 			this->radioButton3->UseVisualStyleBackColor = true;
+			this->radioButton3->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::radioButton3_CheckedChanged);
 			// 
 			// button1
 			// 
@@ -172,6 +183,7 @@ namespace OpenGL {
 			this->button1->TabIndex = 6;
 			this->button1->Text = L"Reset Teapot Position";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &ToolWindow::button1_Click);
 			// 
 			// button2
 			// 
@@ -181,6 +193,7 @@ namespace OpenGL {
 			this->button2->TabIndex = 7;
 			this->button2->Text = L"Reset Light Position";
 			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &ToolWindow::button2_Click);
 			// 
 			// label1
 			// 
@@ -302,6 +315,7 @@ namespace OpenGL {
 		}
 #pragma endregion
 	private: System::Void ToolWindow_Load(System::Object^ sender, System::EventArgs^ e) {
+		MoveLight = radioButton1->Checked;
 	}
 	
 	private: System::Void checkBox1_CheckedChanged_1(System::Object^ sender, System::EventArgs^ e) {
@@ -315,12 +329,29 @@ namespace OpenGL {
 	}
 	private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		label6->Text = (trackBar2->Value/100.00).ToString();
+		Red = (trackBar2->Value / 100.00);
 	}
 	private: System::Void trackBar3_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		label7->Text = (trackBar3->Value/100.00).ToString();
+		Green = (trackBar3->Value / 100.00);
 	}
 	private: System::Void trackBar4_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		label8->Text = (trackBar4->Value/100.00).ToString();
+		Blue = (trackBar4->Value / 100.00);
+	}
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		MoveLight = radioButton1->Checked;
+	}
+	private: System::Void radioButton2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		ByPosition = radioButton1->Checked;
+	}
+	private: System::Void radioButton3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		MoveCubes = radioButton1->Checked;
+	}
+	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+		resetLight = true;
 	}
 };
 }
