@@ -21,6 +21,9 @@ void GameController::Initialize()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
 	srand((unsigned int)time(0));
 
 	m_camera = Camera(WindowController::GetInstance().GetResolution());
@@ -48,6 +51,27 @@ void GameController::RunGame()
 	teapot.SetScale({ 0.02f, 0.02f, 0.02f });
 	teapot.SetPosition({ 0.0f,0.0f,0.0f });
 	m_meshBoxes.push_back(teapot);
+
+	Mesh box = Mesh();
+	box.Create(&m_shaderDiffuse, "../Assets/Models/Cube.obj");
+	box.SetCameraPosition(m_camera.GetPosition());
+	box.SetScale({ 0.5f, 0.5f, 0.5f });
+	box.SetPosition({ -1.0f,-1.0f,-1.0f });
+	m_meshBoxes.push_back(box);
+
+	Mesh plane = Mesh();
+	plane.Create(&m_shaderDiffuse, "../Assets/Models/Plane.obj");
+	plane.SetCameraPosition(m_camera.GetPosition());
+	plane.SetScale({ 0.3f, 0.3f, 0.3f });
+	plane.SetPosition({ 0.0f,0.0f,-1.0f });
+	m_meshBoxes.push_back(plane);
+
+	Mesh window = Mesh();
+	window.Create(&m_shaderDiffuse, "../Assets/Models/Window.obj");
+	window.SetCameraPosition(m_camera.GetPosition());
+	window.SetScale({ 0.1f, 0.1f, 0.1f });
+	window.SetPosition({ 0.0f, 0.0f, 0.0f });
+	m_meshBoxes.push_back(window);
 
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);

@@ -19,6 +19,8 @@ private:
 	int m_height;
 	int m_channels;
 	GLuint m_texture;
+
+	bool EndsWith(const string& _str, const string& _suffix);
 };
 
 #endif
