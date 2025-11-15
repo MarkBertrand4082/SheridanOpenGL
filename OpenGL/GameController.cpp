@@ -32,6 +32,7 @@ void GameController::RunGame()
 	OpenGL::ToolWindow^ window = gcnew OpenGL::ToolWindow();
 	window->Show();
 
+
 	m_shaderColor = Shader();
 	m_shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
 	m_shaderDiffuse = Shader();
@@ -43,7 +44,7 @@ void GameController::RunGame()
 
 	Mesh m = Mesh();
 	m.Create(&m_shaderLight, "../Assets/Models/Sphere.obj");
-	m.SetPosition({ 0.0f, 0.0f, -0.5f });
+	m.SetPosition({ 0.0f, 0.0f, -1.0f });
 	m.SetColor({ 1.0f, 1.0f, 1.0f });
 	m.SetScale({ 0.005f, 0.005f, 0.005f });
 	Mesh::Lights.push_back(m);
