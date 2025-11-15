@@ -106,5 +106,11 @@
     <None Include="Font.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Light.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Light.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
