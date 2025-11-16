@@ -77,7 +77,10 @@ void GameController::RunGame()
 				OpenGL::ToolWindow::resetLight = false;
 			}
 
-
+			GLint loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "otherSpecularColor");
+			glUniform3f(loc, OpenGL::ToolWindow::Red, OpenGL::ToolWindow::Green,OpenGL::ToolWindow::Blue);
+			loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "otherSpecularStrength");
+			glUniform1f(loc, OpenGL::ToolWindow::Specular);
 
 		}
 
@@ -89,18 +92,22 @@ void GameController::RunGame()
 		//center points of quadrants
 		float qHeight = ((float)WindowController::GetInstance().GetResolution().m_height / 4.0) / (float)WindowController::GetInstance().GetResolution().m_width;
 		float qWidth = ((float)WindowController::GetInstance().GetResolution().m_width / 4.0) / (float)WindowController::GetInstance().GetResolution().m_width;
+		glm::vec3 goal;
 
 		if (glfwGetMouseButton(WindowController::GetInstance().GetWindow(),0) == GLFW_PRESS) {
 			if (OpenGL::ToolWindow::MoveLight) {
 				for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
 				{
-					glm::vec2 pos = Mesh::Lights[count].GetPosition();
+					glm::vec3 pos = Mesh::Lights[count].GetPosition();
 					//Top-Left
 					if (msX < WindowController::GetInstance().GetResolution().m_width / 2 && msY < WindowController::GetInstance().GetResolution().m_height / 2)
 					{
-						if (Mesh::Lights[count].GetPosition().x < qWidth || Mesh::Lights[count].GetPosition().y < qHeight)
+						goal = glm::vec3(0.25,0.25,-1);
+						if (pos != goal)
 						{
-							glm::vec3 translation = glm::vec3(pos.x += qWidth/100.0, pos.y += qHeight/100.0, -1.0);
+							glm::vec2 direction = glm::normalize(goal - pos);
+
+							glm::vec3 translation = glm::vec3(pos.x+= (direction.x/1000.0),pos.y+=(direction.y/1000.0),-1.0);
 							Mesh::Lights[count].SetPosition(translation);
 						}
 
@@ -109,9 +116,12 @@ void GameController::RunGame()
 					//Top-Right
 					else if (msX > WindowController::GetInstance().GetResolution().m_width / 2 && msY < WindowController::GetInstance().GetResolution().m_height / 2)
 					{
-						if (Mesh::Lights[count].GetPosition().x > qWidth || Mesh::Lights[count].GetPosition().y < qHeight)
+						goal = glm::vec3(-0.25, 0.25, -1);
+						if (pos != goal)
 						{
-							glm::vec3 translation = glm::vec3(pos.x -= qWidth / 100.0, pos.y += qHeight / 100.0, -1.0);
+							glm::vec2 direction = glm::normalize(goal - pos);
+
+							glm::vec3 translation = glm::vec3(pos.x += (direction.x / 1000.0), pos.y += (direction.y / 1000.0), -1.0);
 							Mesh::Lights[count].SetPosition(translation);
 						}
 
@@ -120,9 +130,12 @@ void GameController::RunGame()
 					//Bottom-Left
 					else if (msX < WindowController::GetInstance().GetResolution().m_width / 2 && msY > WindowController::GetInstance().GetResolution().m_height / 2)
 					{
-						if (Mesh::Lights[count].GetPosition().x < qWidth || Mesh::Lights[count].GetPosition().y > qHeight)
+						goal = glm::vec3(0.25, -0.25, -1);
+						if (pos != goal)
 						{
-							glm::vec3 translation = glm::vec3(pos.x += qWidth / 100.0, pos.y -= qHeight / 100.0, -1.0);
+							glm::vec2 direction = glm::normalize(goal - pos);
+
+							glm::vec3 translation = glm::vec3(pos.x += (direction.x / 1000.0), pos.y += (direction.y / 1000.0), -1.0);
 							Mesh::Lights[count].SetPosition(translation);
 						}
 
@@ -131,9 +144,12 @@ void GameController::RunGame()
 					//Bottom-Right
 					else if (msX > WindowController::GetInstance().GetResolution().m_width / 2 && msY > WindowController::GetInstance().GetResolution().m_height / 2)
 					{
-						if (Mesh::Lights[count].GetPosition().x > qWidth || Mesh::Lights[count].GetPosition().y > qHeight)
+						goal = glm::vec3(-0.25, -0.25, -1);
+						if (pos != goal)
 						{
-							glm::vec3 translation = glm::vec3(pos.x -= qWidth / 100.0, pos.y -= qHeight / 100.0, -1.0);
+							glm::vec2 direction = glm::normalize(goal - pos);
+
+							glm::vec3 translation = glm::vec3(pos.x += (direction.x / 1000.0), pos.y += (direction.y / 1000.0), -1.0);
 							Mesh::Lights[count].SetPosition(translation);
 						}
 

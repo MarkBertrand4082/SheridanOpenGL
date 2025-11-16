@@ -257,7 +257,7 @@ namespace OpenGL {
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(40, 20);
 			this->label6->TabIndex = 14;
-			this->label6->Text = L"0.33";
+			this->label6->Text = L"1.00";
 			// 
 			// label7
 			// 
@@ -266,7 +266,7 @@ namespace OpenGL {
 			this->label7->Name = L"label7";
 			this->label7->Size = System::Drawing::Size(40, 20);
 			this->label7->TabIndex = 15;
-			this->label7->Text = L"0.33";
+			this->label7->Text = L"1.00";
 			// 
 			// label8
 			// 
@@ -316,6 +316,10 @@ namespace OpenGL {
 #pragma endregion
 	private: System::Void ToolWindow_Load(System::Object^ sender, System::EventArgs^ e) {
 		MoveLight = radioButton1->Checked;
+		Red = trackBar2->Value;
+		Green = trackBar3->Value;
+		Blue = trackBar4->Value;
+		Specular = trackBar1->Value;
 	}
 	
 	private: System::Void checkBox1_CheckedChanged_1(System::Object^ sender, System::EventArgs^ e) {
@@ -326,6 +330,7 @@ namespace OpenGL {
 	private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		
 		label5->Text = trackBar1->Value.ToString();
+		Specular = trackBar1->Value;
 	}
 	private: System::Void trackBar2_Scroll(System::Object^ sender, System::EventArgs^ e) {
 		label6->Text = (trackBar2->Value/100.00).ToString();
