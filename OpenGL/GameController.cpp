@@ -62,11 +62,16 @@ void GameController::RunGame()
 
 	do
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Shader* diffuse = &m_shaderDiffuse;
+		GLfloat colours[3];
+		colours[0] = OpenGL::ToolWindow::Red;
+		colours[1] = OpenGL::ToolWindow::Blue;
+		colours[2] = OpenGL::ToolWindow::Green;
 
-		diffuse->SetFloat("specStr", OpenGL::ToolWindow::Specular);
-		diffuse->SetVec3("specClr", glm::vec3(OpenGL::ToolWindow::Red, OpenGL::ToolWindow::Green, OpenGL::ToolWindow::Blue));
+		GLint loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "specClr");
+		glUniform3fv(loc,1, colours);
+
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glGetError();
 
