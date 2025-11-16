@@ -21,6 +21,7 @@ namespace OpenGL {
 		static bool MoveCubes;
 		static bool ByPosition;
 		static bool resetLight;
+		static bool resetPot;
 		static float Red;
 		static float Green;
 		static float Blue;
@@ -345,15 +346,19 @@ namespace OpenGL {
 		Blue = (trackBar4->Value / 100.00);
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+		resetPot = true;
 	}
 	private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		resetLight = true;
 		MoveLight = radioButton1->Checked;
 	}
 	private: System::Void radioButton2_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		ByPosition = radioButton1->Checked;
+		resetPot = true;
+		ByPosition = radioButton2->Checked;
 	}
 	private: System::Void radioButton3_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		MoveCubes = radioButton1->Checked;
+		resetPot = true;
+		MoveCubes = radioButton3->Checked;
 	}
 	private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 		resetLight = true;
