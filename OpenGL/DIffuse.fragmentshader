@@ -23,7 +23,9 @@ struct Light
 	vec3 specularColor;
 };
 
-uniform vec3 specClr;
+uniform float red;
+uniform float green;
+uniform float blue;
 uniform float specStr;
 uniform Material material;
 #define NR_LIGHTS 1
@@ -41,7 +43,7 @@ void main()
 
 		vec3 ambient = texture(material.diffuseTexture, retTexCoord).rgb * light[i].ambientColor / NR_LIGHTS;
 		vec3 lambertian = lambertianStrength * texture(material.diffuseTexture, retTexCoord).rgb * light[i].diffuseColor;
-		vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * specClr;
+		vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * vec3(red, green, blue);
 		
 		finalColor += vec4(ambient + lambertian + specular, 1.0f);
 	}
