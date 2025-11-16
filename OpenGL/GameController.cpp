@@ -63,6 +63,12 @@ void GameController::RunGame()
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Shader* diffuse = &m_shaderDiffuse;
+
+		diffuse->SetFloat("specStr", OpenGL::ToolWindow::Specular);
+		diffuse->SetVec3("specClr", glm::vec3(OpenGL::ToolWindow::Red, OpenGL::ToolWindow::Green, OpenGL::ToolWindow::Blue));
+
+		glGetError();
 
 		for (unsigned int count = 0; count < m_meshBoxes.size(); count++)
 		{
@@ -76,12 +82,6 @@ void GameController::RunGame()
 				Mesh::Lights[count].SetPosition(glm::vec3(0.0,0.0,-1.0));
 				OpenGL::ToolWindow::resetLight = false;
 			}
-
-			GLint loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "otherSpecularColor");
-			glUniform3f(loc, OpenGL::ToolWindow::Red, OpenGL::ToolWindow::Green,OpenGL::ToolWindow::Blue);
-			loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "otherSpecularStrength");
-			glUniform1f(loc, OpenGL::ToolWindow::Specular);
-
 		}
 
 		

@@ -59,16 +59,25 @@ void Mesh::Create(Shader* _shader, string _file)
 	}
 
 	string diffuseMap = Loader.LoadedMaterials[0].map_Kd;
+	string specularMap = Loader.LoadedMaterials[0].map_Ks;
 	const size_t last_slash_idx = diffuseMap.find_last_of("\\");
 	if(std::string::npos != last_slash_idx)
 	{
 		diffuseMap.erase(0, last_slash_idx + 1);
+		specularMap.erase(0, last_slash_idx + 1);
 	}
 
 	m_texture = Texture();
 	m_texture.LoadTexture("../Assets/Textures/"+diffuseMap);
-	m_texture2 = Texture();
-	m_texture2.LoadTexture("../Assets/Textures/"+diffuseMap);
+	if (specularMap != "") {
+		m_texture2 = Texture();
+		m_texture2.LoadTexture("../Assets/Textures/" + specularMap);
+	}
+	else {
+		m_texture2 = Texture();
+		m_texture2.LoadTexture("../Assets/Textures/" + diffuseMap);
+	}
+	
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -131,7 +140,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 
 		m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), {0.1f, 0.1f, 0.1f});
 		m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
-		m_shader->SetVec3(Concat("light[", i, "].specualarColor").c_str(), {3.0f, 3.0f, 3.0f});
+		m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), {3.0f, 3.0f, 3.0f});
 
 		m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
 		m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({0.0f + i * 0.1f, 0, 0.0f + i * 0.1f}) - Lights[i].GetPosition()));
