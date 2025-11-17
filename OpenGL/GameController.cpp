@@ -59,6 +59,13 @@ void GameController::RunGame()
 	teapot.SetPosition({ 0.0f,0.0f,0.0f });
 	m_meshBoxes.push_back(teapot);
 
+	Mesh texSphere = Mesh();
+	texSphere.Create(&m_shaderDiffuse, "../Assets/Models/texSphere.obj");
+	texSphere.SetCameraPosition(m_camera.GetPosition());
+	texSphere.SetScale({ 0.02f, 0.02f, 0.02f });
+	texSphere.SetPosition({ 0.0f,0.0f,0.0f });
+	m_meshBoxes.push_back(texSphere);
+
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 50);
 
@@ -71,10 +78,23 @@ void GameController::RunGame()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glGetError();
-
-		for (unsigned int count = 0; count < m_meshBoxes.size(); count++)
+		//renders the added boxes. The teapot and sphere take up the [0] and [1] spots and I render them in a seperate area
+		//Also the only reason the boxes look white is because the base specular strength makes them really bright
+		for (unsigned int count = 2; count < m_meshBoxes.size(); count++)
 		{
-			m_meshBoxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
+			glm::vec3 pos = m_meshBoxes[count].GetPosition();
+			glm::vec3 direction = glm::normalize(glm::vec3(0, 0, 0) - pos);
+			glm::vec3 translation = glm::vec3(pos.x += (direction.x / 1000.0), pos.y += (direction.y / 1000.0), pos.z += (direction.z / 1000.0));
+			m_meshBoxes[count].SetPosition(translation);
+
+			if (abs(pos.x) < 0.01 && abs(pos.y) < 0.01 && abs(pos.z) < 0.01) {
+				m_meshBoxes.erase(m_meshBoxes.begin() + count);
+				count -= 1;
+			}
+			else {
+				m_meshBoxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
+			}
+				
 		}
 		if (OpenGL::ToolWindow::MoveLight) {
 			for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
@@ -90,6 +110,14 @@ void GameController::RunGame()
 		if (OpenGL::ToolWindow::resetPot) {
 			m_meshBoxes[0].SetPosition(glm::vec3(0.0, 0.0, 0.0));
 			OpenGL::ToolWindow::resetPot = false;
+		}
+
+		if (OpenGL::ToolWindow::MoveLight || OpenGL::ToolWindow::ByPosition) {
+			m_meshBoxes[0].Render(m_camera.GetProjection() * m_camera.GetView());
+		}
+
+		if (OpenGL::ToolWindow::MoveCubes) {
+			m_meshBoxes[1].Render(m_camera.GetProjection() * m_camera.GetView());
 		}
 
 		glm::vec3 colours = glm::vec3(OpenGL::ToolWindow::Red, OpenGL::ToolWindow::Green, OpenGL::ToolWindow::Blue);
@@ -110,15 +138,7 @@ void GameController::RunGame()
 			glUniform1f(loc, OpenGL::ToolWindow::Specular);
 
 		}
-		else if (OpenGL::ToolWindow::ByPosition) {
-			//vec4(10 * vec3(abs(red), abs(green), abs(blue)), 1.0);
-			GLint loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "red");
-			glUniform1f(loc, mesh.GetPosition().x+1.0);
-			loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "green");
-			glUniform1f(loc, mesh.GetPosition().y+1.0);
-			loc = glGetUniformLocation(m_shaderDiffuse.GetProgramID(), "blue");
-			glUniform1f(loc, mesh.GetPosition().z+1.0);
-		}
+		
 		
 
 		double msX, msY;
@@ -259,9 +279,20 @@ void GameController::RunGame()
 
 				}
 			}
+
+			if (OpenGL::ToolWindow::MoveCubes) {
+				Mesh box = Mesh();
+				box.Create(&m_shaderDiffuse, "../Assets/Models/thebox.obj");
+				box.SetCameraPosition(m_camera.GetPosition());
+				box.SetScale({ 0.002f, 0.002f, 0.002f });
+				box.SetPosition({ (float)(rand()%200 - 100)/100, (float)(rand() % 200 - 100) / 100, (float)(rand() % 200 - 100) / 100 });
+				m_meshBoxes.push_back(box);
+			}
+		}
+		if (OpenGL::ToolWindow::MoveCubes) {
+			f.RenderText("Cubes :" +to_string(m_meshBoxes.size() -2), 10, 200, 0.5f, {1.0f, 1.0f, 0.0f});
 		}
 		
-		//f.RenderText("Mouse Position ("+to_string(msX) + ", " + to_string(msY) + ")", 10, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 		f.RenderText("Mouse Position ("+to_string(Mesh::Lights[0].GetPosition().x) + ", " + to_string(Mesh::Lights[0].GetPosition().y) + ")", 10, 100, 0.5f, {1.0f, 1.0f, 0.0f});
 		glfwSwapBuffers(WindowController::GetInstance().GetWindow());
 		glfwPollEvents();
