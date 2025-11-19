@@ -22,8 +22,7 @@ void GameController::Initialize()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);;
 	srand((unsigned int)time(0));
 
 	m_camera = Camera(WindowController::GetInstance().GetResolution());
@@ -33,45 +32,37 @@ void GameController::RunGame()
 {
 	m_shaderColor = Shader();
 	m_shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
+
 	m_shaderDiffuse = Shader();
 	m_shaderDiffuse.LoadShaders("Diffuse.vertexshader", "Diffuse.fragmentshader");
+
+	m_shaderSkybox = Shader();
+	m_shaderSkybox.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
+
 	m_shaderFont = Shader();
 	m_shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
 
 	Mesh m = Mesh();
 	m.Create(&m_shaderColor, "../Assets/Models/Teapot.obj");
-	m.SetPosition({ 1.0f, 0.0f, 0.0f });
+	m.SetPosition({ 1.5f, 0.0f, 0.0f });
 	m.SetColor({ 1.0f, 1.0f, 1.0f });
 	m.SetScale({ 0.01f, 0.01f, 0.01f });
 	Mesh::Lights.push_back(m);
 
-	Mesh teapot = Mesh();
-	teapot.Create(&m_shaderDiffuse, "../Assets/Models/Teapot.obj");
-	teapot.SetCameraPosition(m_camera.GetPosition());
-	teapot.SetScale({ 0.02f, 0.02f, 0.02f });
-	teapot.SetPosition({ 0.0f,0.0f,0.0f });
-	m_meshBoxes.push_back(teapot);
-
+	
 	Mesh box = Mesh();
-	box.Create(&m_shaderDiffuse, "../Assets/Models/Cube.obj");
+	box.Create(&m_shaderDiffuse, "../Assets/Models/OtherBox.obj");
 	box.SetCameraPosition(m_camera.GetPosition());
-	box.SetScale({ 0.5f, 0.5f, 0.5f });
-	box.SetPosition({ -1.0f,-1.0f,-1.0f });
+	box.SetScale({ 0.25f, 0.25f, 0.25f });
+	box.SetPosition({ 0.0f,1.0f,1.0f });
 	m_meshBoxes.push_back(box);
 
-	Mesh plane = Mesh();
-	plane.Create(&m_shaderDiffuse, "../Assets/Models/Plane.obj");
-	plane.SetCameraPosition(m_camera.GetPosition());
-	plane.SetScale({ 0.3f, 0.3f, 0.3f });
-	plane.SetPosition({ 0.0f,0.0f,-1.0f });
-	m_meshBoxes.push_back(plane);
-
-	Mesh window = Mesh();
-	window.Create(&m_shaderDiffuse, "../Assets/Models/Window.obj");
-	window.SetCameraPosition(m_camera.GetPosition());
-	window.SetScale({ 0.1f, 0.1f, 0.1f });
-	window.SetPosition({ 0.0f, 0.0f, 0.0f });
-	m_meshBoxes.push_back(window);
+	Mesh wall = Mesh();
+	wall.Create(&m_shaderDiffuse, "../Assets/Models/Wall.obj");
+	wall.SetCameraPosition(m_camera.GetPosition());
+	wall.SetScale({ 0.05f, 0.05f, 0.05f });
+	wall.SetPosition({ 0.0f, 0.0f, 0.0f });
+	m_meshBoxes.push_back(wall);
 
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
@@ -79,6 +70,9 @@ void GameController::RunGame()
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_camera.Rotate();
+		glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
 
 		for (unsigned int count = 0; count < m_meshBoxes.size(); count++)
 		{
@@ -90,7 +84,6 @@ void GameController::RunGame()
 			Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
 		}
 
-		f.RenderText("Testing Text", 10, 500, 0.5f, {1.0f, 1.0f, 0.0f});
 		glfwSwapBuffers(WindowController::GetInstance().GetWindow());
 		glfwPollEvents();
 	} 
@@ -101,12 +94,13 @@ void GameController::RunGame()
 	{
 		m_meshBoxes[count].Cleanup();
 	}
-	for(int count = 0; count <Mesh::Lights.size(); count++)
+	for (int count = 0; count < Mesh::Lights.size(); count++)
 	{
 		Mesh::Lights[count].Cleanup();
-	}
+	};
 
 	m_shaderDiffuse.Cleanup();
 	m_shaderColor.Cleanup();
+	m_shaderSkybox.Cleanup();
 }
 

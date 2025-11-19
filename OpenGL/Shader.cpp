@@ -53,6 +53,15 @@ void Shader::SetFloat(const char* _name, float _value)
 	}
 }
 
+void Shader::SetInt(const char* _name, int _value) 
+{
+	GLint loc = glGetUniformLocation(m_programID, _name);
+	if (loc != -1)
+	{
+		glUniform1i(loc, _value);
+	}
+}
+
 void Shader::LoadAttributes() {
 	m_attrVertices = glGetAttribLocation(m_programID, "vertices");
 	m_attrColors = glGetAttribLocation(m_programID, "colors");
