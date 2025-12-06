@@ -118,12 +118,16 @@
     <None Include="Font.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Skybox.fragmentshader" />
-    <None Include="Skybox.vertexshader" />
     <None Include="PostProcessor.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
     <None Include="PostProcessor.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Skybox.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Skybox.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
